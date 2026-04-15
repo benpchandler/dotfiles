@@ -1,0 +1,1 @@
+"""Feature slices - each feature is self-contained with its own vertical slice."""

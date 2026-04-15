@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Claude AI: Run tests with helpful output
+
+echo "🧪 Running {{ cookiecutter.project_name }} tests..."
+
+# Check if virtual environment exists
+if [ ! -d ".venv" ]; then
+    echo "❌ No virtual environment found. Run 'make install' first."
+    exit 1
+fi
+
+# Run different test suites
+if [ "$1" == "unit" ]; then
+    echo "Running unit tests only..."
+    uv run pytest tests/unit -v
+elif [ "$1" == "integration" ]; then
+    echo "Running integration tests only..."
+    uv run pytest tests/integration -v
+elif [ "$1" == "coverage" ]; then
+    echo "Running tests with coverage report..."
+    uv run pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=html
+    echo -e "\n📊 Coverage report generated at htmlcov/index.html"
+elif [ "$1" == "watch" ]; then
+    echo "Running tests in watch mode..."
+    uv run pytest-watch tests/ -v
+else
+    echo "Running all tests..."
+    uv run pytest tests/ -v
+fi
+
+# Check test results
+if [ $? -eq 0 ]; then
+    echo -e "\n✅ All tests passed!"
+else
+    echo -e "\n❌ Some tests failed. Check the output above."
+fi
+
+# Show test statistics
+echo -e "\n📈 Test Statistics:"
+find tests -name "test_*.py" -type f | wc -l | xargs echo "- Test files:"
+grep -r "def test_" tests | wc -l | xargs echo "- Test functions:"
+
+# Suggest next steps
+echo -e "\n💡 Testing tips:"
+echo "- Use 'make test-unit' for faster feedback during development"
+echo "- Use 'make test coverage' to see uncovered lines"
+echo "- Add tests for new features in their feature folder"
+echo "- Aim for >80% code coverage"

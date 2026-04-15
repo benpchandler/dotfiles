@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Claude AI: Analyze Python backend code
+
+echo "🔍 Analyzing {{ cookiecutter.project_name }} codebase..."
+
+# Architecture analysis
+echo -e "\n📐 Architecture Check:"
+echo "- Checking vertical slice organization..."
+find src/features -type f -name "*.py" | head -10
+
+# Code quality
+echo -e "\n✨ Code Quality:"
+ruff check src --statistics 2>/dev/null || echo "Run 'make lint' to see detailed linting results"
+
+# Test coverage
+echo -e "\n🧪 Test Coverage:"
+if [ -f .coverage ]; then
+    coverage report --skip-empty | tail -5
+else
+    echo "No coverage data found. Run 'make test' to generate coverage."
+fi
+
+# Dependencies
+echo -e "\n📦 Dependencies:"
+echo "- Direct dependencies: $(grep -c '^ ' pyproject.toml 2>/dev/null || echo 0)"
+echo "- Using uv for package management"
+
+# Security check
+echo -e "\n🔒 Security Notes:"
+echo "- Check for hardcoded secrets in .env files"
+echo "- Ensure SECRET_KEY is changed in production"
+echo "- Database credentials should use environment variables"
+
+# Performance considerations
+echo -e "\n⚡ Performance:"
+echo "- Using FastAPI with async/await"
+echo "- Database queries use SQLAlchemy async sessions"
+echo "- Consider caching for frequently accessed data"
+
+# Suggest improvements
+echo -e "\n💡 Suggestions for improvement:"
+echo "1. Add more comprehensive error handling"
+echo "2. Implement request/response validation"
+echo "3. Add API versioning strategy"
+echo "4. Configure structured logging"
+echo "5. Add monitoring/metrics endpoints"

@@ -1,0 +1,354 @@
+# /test Command
+
+Command: `/test {{type}} {{target}}`
+
+You are tasked with generating comprehensive tests for the specified target. You will analyze the code, understand its behavior, and create thorough test cases that ensure quality and catch edge cases.
+
+**IMPORTANT: Think deeply about test scenarios. Consider edge cases, error conditions, and integration points. Use extended thinking to ensure comprehensive coverage.**
+
+## Initial Setup
+1. Use the TodoWrite tool to create a task list for your test generation:
+   - [ ] Analyze target code and dependencies
+   - [ ] Identify test scenarios and edge cases
+   - [ ] Determine test framework and patterns
+   - [ ] Generate test structure
+   - [ ] Create individual test cases
+   - [ ] Add setup/teardown logic
+   - [ ] Include test documentation
+
+2. Update your todo list as you progress through each phase
+
+## Available Test Types:
+- `unit`: Isolated unit tests for functions/classes
+- `integration`: Tests for component interactions
+- `e2e`: End-to-end tests for user workflows
+- `coverage`: Analyze and fill coverage gaps
+
+## Core Analysis Requirements (ALL test types)
+
+### 1. Code Understanding Phase
+Think deeply about:
+- What is the code's primary purpose?
+- What are the expected inputs and outputs?
+- What are the side effects?
+- What are the error conditions?
+- What are the performance requirements?
+
+### 2. Test Scenario Identification
+Systematically identify:
+- Happy path scenarios
+- Edge cases (null, empty, boundary values)
+- Error scenarios
+- Invalid input handling
+- Concurrency issues (if applicable)
+- Security considerations
+- Performance boundaries
+
+### 3. Test Quality Principles
+Ensure tests are:
+- **Fast**: Tests run quickly
+- **Independent**: No test depends on another
+- **Repeatable**: Same result every time
+- **Self-Validating**: Clear pass/fail
+- **Timely**: Written with or before code
+
+### 4. Visual Test Coverage
+Create a Mermaid diagram showing:
+- Test coverage areas
+- Dependencies being mocked
+- Integration points
+- Test data flow
+
+## Sub-Prompts by Type
+
+### 1. Unit Tests (`unit`)
+
+When the user requests: `/test unit {{target}}`
+
+**Extended Analysis Phase:**
+```
+Think harder about:
+- What is the smallest testable unit?
+- What should be mocked vs. real?
+- What are all possible code paths?
+- What invariants must be maintained?
+```
+
+**Test Structure Requirements:**
+- Arrange-Act-Assert pattern
+- Clear test names describing behavior
+- Minimal setup/teardown
+- Focused on single responsibility
+
+**Mermaid Diagram Example:**
+```mermaid
+graph LR
+    subgraph "Unit Test Scope"
+        Target[Target Function/Class]
+        Mock1[Mocked Dependency 1]
+        Mock2[Mocked Dependency 2]
+    end
+    
+    subgraph "Test Cases"
+        TC1[Happy Path]
+        TC2[Edge Cases]
+        TC3[Error Cases]
+    end
+    
+    TC1 --> Target
+    TC2 --> Target
+    TC3 --> Target
+    Target --> Mock1
+    Target --> Mock2
+```
+
+### 2. Integration Tests (`integration`)
+
+When the user requests: `/test integration {{target}}`
+
+**Extended Analysis Phase:**
+```
+Think deeply about:
+- How do components interact?
+- What are the integration boundaries?
+- What real dependencies are needed?
+- What data flows between components?
+```
+
+**Test Structure Requirements:**
+- Test real component interactions
+- Use test databases/services where needed
+- Focus on communication contracts
+- Verify data transformations
+
+**Mermaid Diagram Example:**
+```mermaid
+sequenceDiagram
+    participant Test
+    participant Component A
+    participant Component B
+    participant Database
+    
+    Test->>Component A: Initialize
+    Test->>Component B: Initialize
+    Test->>Component A: Trigger Action
+    Component A->>Component B: Send Request
+    Component B->>Database: Query Data
+    Database-->>Component B: Return Data
+    Component B-->>Component A: Process Response
+    Component A-->>Test: Verify Result
+```
+
+### 3. End-to-End Tests (`e2e`)
+
+When the user requests: `/test e2e {{target}}`
+
+**Extended Analysis Phase:**
+```
+Think about:
+- What are the critical user journeys?
+- What UI interactions are involved?
+- What backend services are called?
+- What are the expected outcomes?
+```
+
+**Test Structure Requirements:**
+- Page Object Model (if applicable)
+- User-focused scenarios
+- Real environment simulation
+- Complete workflow validation
+
+### 4. Coverage Analysis (`coverage`)
+
+When the user requests: `/test coverage {{target}}`
+
+**Extended Analysis Phase:**
+```
+Analyze:
+- Current test coverage percentage
+- Uncovered code paths
+- Critical missing scenarios
+- Risk assessment of gaps
+```
+
+**Coverage Report Structure:**
+- Identify uncovered lines/branches
+- Prioritize by risk/importance
+- Generate tests for gaps
+- Update existing tests
+
+## Test Generation Output Format
+
+```typescript
+// For TypeScript/JavaScript projects
+describe('[Component/Function Name]', () => {
+  // Setup and teardown
+  beforeEach(() => {
+    // Test setup
+  });
+
+  afterEach(() => {
+    // Cleanup
+  });
+
+  // Group related tests
+  describe('[Feature/Method Name]', () => {
+    it('should [expected behavior] when [condition]', () => {
+      // Arrange
+      const input = setupTestData();
+      
+      // Act
+      const result = targetFunction(input);
+      
+      // Assert
+      expect(result).toBe(expectedValue);
+    });
+
+    it('should handle [edge case] gracefully', () => {
+      // Edge case test
+    });
+
+    it('should throw [error] when [invalid condition]', () => {
+      // Error case test
+    });
+  });
+
+  // Performance tests (if applicable)
+  describe('Performance', () => {
+    it('should complete within [time limit]', () => {
+      // Performance test
+    });
+  });
+});
+```
+
+```python
+# For Python projects
+import pytest
+from unittest.mock import Mock, patch
+
+class Test[ComponentName]:
+    """Test suite for [Component/Function Name]"""
+    
+    @pytest.fixture
+    def setup(self):
+        """Setup test fixtures"""
+        # Setup code
+        yield
+        # Teardown code
+    
+    def test_[behavior]_when_[condition](self, setup):
+        """Test that [expected behavior] occurs when [condition]"""
+        # Arrange
+        input_data = create_test_data()
+        
+        # Act
+        result = target_function(input_data)
+        
+        # Assert
+        assert result == expected_value
+    
+    def test_handles_[edge_case]_gracefully(self):
+        """Test edge case handling"""
+        # Edge case test
+    
+    def test_raises_[error]_for_[invalid_condition](self):
+        """Test error handling"""
+        with pytest.raises(ExpectedError):
+            target_function(invalid_input)
+    
+    @pytest.mark.parametrize("input,expected", [
+        (input1, expected1),
+        (input2, expected2),
+    ])
+    def test_multiple_scenarios(self, input, expected):
+        """Test multiple input scenarios"""
+        assert target_function(input) == expected
+```
+
+## Test Documentation Template
+
+```markdown
+## Test Suite: [Component Name]
+
+### Overview
+[Brief description of what is being tested]
+
+### Test Scenarios
+
+#### 1. [Scenario Name]
+- **Purpose**: [Why this test exists]
+- **Setup**: [Required test data/mocks]
+- **Expected**: [Expected behavior]
+- **Coverage**: [What code paths this tests]
+
+#### 2. [Edge Case Name]
+- **Purpose**: [Why this edge case matters]
+- **Condition**: [What triggers this case]
+- **Expected**: [How it should be handled]
+
+### Test Data
+[Description of test fixtures and data setup]
+
+### Mocking Strategy
+[What is mocked and why]
+
+### Performance Benchmarks
+[Any performance requirements tested]
+
+### Known Limitations
+[What isn't tested and why]
+```
+
+## Edge Cases Checklist
+
+Always consider these edge cases:
+
+### Input Validation
+- [ ] Null/undefined values
+- [ ] Empty strings/arrays/objects
+- [ ] Boundary values (min/max)
+- [ ] Invalid types
+- [ ] Special characters
+- [ ] Very large inputs
+
+### State Management
+- [ ] Initial state
+- [ ] State after errors
+- [ ] Concurrent modifications
+- [ ] State persistence
+
+### Error Handling
+- [ ] Network failures
+- [ ] Timeout scenarios
+- [ ] Permission errors
+- [ ] Resource exhaustion
+- [ ] Invalid operations
+
+### Integration Points
+- [ ] Service unavailable
+- [ ] Slow responses
+- [ ] Data inconsistencies
+- [ ] Version mismatches
+
+## Instructions for AI
+
+1. **Use Extended Thinking**: Think deeply about test scenarios and edge cases
+2. **Maintain Todo List**: Track progress through test generation phases
+3. **Follow Framework Conventions**: Use the project's existing test patterns
+4. **Consider Test Pyramid**: Balance unit, integration, and e2e tests
+5. **Mock Appropriately**: Mock external dependencies, not internal logic
+6. **Name Tests Clearly**: Test names should describe behavior, not implementation
+7. **Keep Tests Simple**: Each test should verify one thing
+8. **Use Test Data Builders**: Create reusable test data setup functions
+9. **Document Complex Tests**: Add comments for non-obvious test logic
+10. **Think About Maintenance**: Tests should be easy to update as code evolves
+
+## Quality Metrics
+
+Ensure generated tests meet these criteria:
+- **Coverage**: Minimum 80% code coverage
+- **Clarity**: Test intent is immediately clear
+- **Speed**: Unit tests < 100ms, Integration < 1s
+- **Reliability**: No flaky tests
+- **Maintainability**: Easy to update with code changes

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Template Generator Script
+# Creates new projects from chezmoi templates
+
+TEMPLATES_DIR="$HOME/.local/share/chezmoi/templates"
+
+function list_templates() {
+    echo "Available templates:"
+    ls -1 "$TEMPLATES_DIR" | grep -v "^\\." | sed 's/^/  - /'
+}
+
+function create_project() {
+    local template_name="$1"
+    local template_path="$TEMPLATES_DIR/$template_name"
+    
+    if [[ ! -d "$template_path" ]]; then
+        echo "Error: Template '$template_name' not found"
+        list_templates
+        exit 1
+    fi
+    
+    # Check if cookiecutter is installed
+    if ! command -v cookiecutter &> /dev/null; then
+        echo "Installing cookiecutter..."
+        brew install cookiecutter || {
+            echo "Failed to install cookiecutter. Please install it manually:"
+            echo "  brew install cookiecutter"
+            exit 1
+        }
+    fi
+    
+    echo "Creating project from template: $template_name"
+    cookiecutter "$template_path"
+}
+
+# Main script logic
+case "$1" in
+    "list"|"ls"|"")
+        list_templates
+        ;;
+    *)
+        create_project "$1"
+        ;;
+esac

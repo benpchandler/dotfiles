@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr diff:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(gh pr comment:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "Context7",
+    "github",
+    "brave-search"
+  ]
+}

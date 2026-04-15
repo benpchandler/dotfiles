@@ -1,0 +1,5 @@
+[tools]
+python = "{{ cookiecutter.python_version }}"
+
+[env]
+PYTHON_VERSION = "{{ cookiecutter.python_version }}"

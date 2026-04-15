@@ -1,0 +1,56 @@
+# Ghostty Configuration
+
+theme = Bloomberg
+
+# ===== FONT =====
+font-family = "JetBrainsMono Nerd Font"
+font-size = 11
+
+# ===== WINDOW =====
+background-opacity = 1.0
+window-padding-x = 5
+window-padding-y = 5
+window-padding-balance = true
+split-divider-color = #FFA028
+macos-titlebar-style = tabs
+
+# ===== CURSOR =====
+cursor-style = block
+
+# ===== SHELL INTEGRATION =====
+# Enables: prompt-to-prompt jump (Cmd+Up/Down), sudo password caching,
+# and cursor shape changes per context. Leave title updates disabled so
+# long-running CLIs don't overwrite manually assigned tab/surface names.
+shell-integration = zsh
+shell-integration-features = cursor,sudo,no-title
+
+# ===== SCROLLBACK =====
+scrollback-limit = 100000000
+scroll-to-bottom = no-keystroke,no-output
+
+# ===== NOTIFICATIONS =====
+bell-features = title,attention
+desktop-notifications = true
+
+# ===== BEHAVIOR =====
+window-save-state = always
+window-decoration = auto
+confirm-close-surface = true
+quit-after-last-window-closed = false
+mouse-hide-while-typing = true
+copy-on-select = true
+clipboard-read = allow
+clipboard-write = allow
+link-previews = true
+cursor-click-to-move = true
+
+# ===== OPTION KEY =====
+macos-option-as-alt = true
+
+# ===== KEYBINDS =====
+keybind = cmd+shift+r=reload_config
+keybind = cmd+k=clear_screen
+keybind = cmd+enter=toggle_fullscreen
+keybind = shift+enter=text:\x1b\r
+keybind = cmd+shift+t=prompt_surface_title
+keybind = cmd+grave_accent=toggle_quick_terminal

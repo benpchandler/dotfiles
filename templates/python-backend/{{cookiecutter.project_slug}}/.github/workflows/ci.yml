@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    {% if cookiecutter.include_postgres == 'y' %}
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    {% endif %}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "{{ cookiecutter.python_version }}"
+    
+    - name: Install dependencies
+      run: |
+        uv sync --frozen --all-extras
+    
+    - name: Run linting
+      run: |
+        uv run ruff check src tests
+        uv run ruff format --check src tests
+    
+    - name: Run type checking
+      run: |
+        uv run mypy src
+    
+    - name: Run tests
+      env:
+        {% if cookiecutter.include_postgres == 'y' %}DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/test_db{% endif %}
+      run: |
+        uv run pytest tests/ -v --cov=src --cov-report=xml
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: |
+        docker build -t {{ cookiecutter.project_slug }}:${{ github.sha }} .
+    
+    - name: Run container tests
+      run: |
+        docker run --rm {{ cookiecutter.project_slug }}:${{ github.sha }} python -c "import src.main; print('Import successful')"

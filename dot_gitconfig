@@ -1,0 +1,7 @@
+[user]
+	name = Ben Chandler
+	email = benpchandler@gmail.com
+[init]
+	defaultBranch = main
+[advice]
+	defaultBranchName = false

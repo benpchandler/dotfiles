@@ -1,0 +1,310 @@
+# /work Command
+
+Command: `/work {{issue_number_or_url}}`
+
+You are tasked with implementing a complete solution for a GitHub issue. You will fetch the issue, understand requirements, create an implementation plan, execute the work, test thoroughly, and prepare for PR submission.
+
+**IMPORTANT: Think deeply about the issue requirements and edge cases. Follow TDD practices where appropriate. Ensure all changes are tested and documented. Use extended thinking to deliver production-quality code.**
+
+## Initial Setup
+1. Use the TodoWrite tool to create a task list based on the issue:
+   - [ ] Fetch and analyze GitHub issue
+   - [ ] Understand acceptance criteria
+   - [ ] Create implementation plan
+   - [ ] Set up feature branch
+   - [ ] Implement solution incrementally
+   - [ ] Write/update tests
+   - [ ] Verify acceptance criteria
+   - [ ] Update documentation
+   - [ ] Prepare PR description
+
+2. Update your todo list as you progress through implementation
+
+## Workflow Phases
+
+### Phase 1: Issue Analysis
+
+**Fetch Issue Details:**
+```bash
+# Use gh CLI to get issue details
+gh issue view {{issue_number}} --json title,body,labels,assignees,comments
+```
+
+**Extract Requirements:**
+Think deeply about:
+- What is the core problem being solved?
+- What are the explicit acceptance criteria?
+- What are the implicit requirements?
+- What edge cases need handling?
+- What could break with this change?
+- Who are the stakeholders?
+
+**Analyze Issue Type:**
+- 🐛 Bug: Focus on root cause and regression prevention
+- ✨ Feature: Consider UX, scalability, and integration
+- 🔧 Refactor: Ensure no behavior changes
+- 📚 Documentation: Verify accuracy and completeness
+- 🎨 UI/UX: Consider accessibility and responsiveness
+
+### Phase 2: Implementation Planning
+
+**Create Detailed Plan:**
+```markdown
+## Implementation Plan for #{{issue_number}}
+
+### Understanding
+[Restate the problem in your own words]
+
+### Acceptance Criteria
+- [ ] [Criterion 1 from issue]
+- [ ] [Criterion 2 from issue]
+- [ ] [Additional criteria you've identified]
+
+### Technical Approach
+1. [Step 1 with rationale]
+2. [Step 2 with rationale]
+3. [Step 3 with rationale]
+
+### Files to Modify
+- `path/to/file1.ts` - [What changes and why]
+- `path/to/file2.ts` - [What changes and why]
+
+### Tests Required
+- [ ] Unit test for [component/function]
+- [ ] Integration test for [flow]
+- [ ] E2E test for [user journey] (if applicable)
+
+### Edge Cases
+1. [Edge case 1]: [How to handle]
+2. [Edge case 2]: [How to handle]
+
+### Dependencies
+- No new dependencies required
+OR
+- Need to add: [package] for [reason]
+```
+
+### Phase 3: Development Workflow
+
+**1. Create Feature Branch:**
+```bash
+# Create branch with descriptive name
+git checkout -b fix/{{issue_number}}-{{brief-description}}
+# OR
+git checkout -b feature/{{issue_number}}-{{brief-description}}
+```
+
+**2. Test-Driven Development (when applicable):**
+```
+a. Write failing test for the requirement
+b. Implement minimal code to pass test
+c. Refactor for quality
+d. Repeat for each requirement
+```
+
+**3. Implementation Pattern:**
+- Make atomic commits with clear messages
+- Run tests after each significant change
+- Keep the PR scope focused
+- Update types/interfaces as needed
+- Handle errors gracefully
+- Add logging where appropriate
+
+### Phase 4: Code Implementation
+
+**For Bug Fixes:**
+1. Write test that reproduces the bug
+2. Fix the bug with minimal changes
+3. Verify fix doesn't break other tests
+4. Add regression test
+5. Update relevant documentation
+
+**For Features:**
+1. Implement core functionality
+2. Add comprehensive tests
+3. Update TypeScript types
+4. Add error handling
+5. Implement UI (if applicable)
+6. Add documentation/comments
+7. Update user-facing docs
+
+**For Refactoring:**
+1. Ensure comprehensive test coverage exists
+2. Make incremental changes
+3. Run tests after each change
+4. Verify no behavior changes
+5. Update documentation if APIs change
+
+### Phase 5: Testing & Validation
+
+**Run Test Suite:**
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test {{test_file}}
+
+# Run with coverage
+npm test -- --coverage
+
+# Run linting
+npm run lint
+
+# Run type checking
+npm run type-check
+```
+
+**Manual Testing Checklist:**
+- [ ] Happy path works as expected
+- [ ] Edge cases handled properly
+- [ ] Error states show appropriate messages
+- [ ] No console errors or warnings
+- [ ] Performance is acceptable
+- [ ] Works across different screen sizes (if UI)
+- [ ] Accessibility requirements met
+
+**Acceptance Criteria Verification:**
+Go through each criterion and verify:
+- [ ] Criterion 1: [How you verified]
+- [ ] Criterion 2: [How you verified]
+
+### Phase 6: Documentation & PR Preparation
+
+**Update Documentation:**
+- [ ] Code comments for complex logic
+- [ ] JSDoc/TSDoc for public APIs
+- [ ] README updates (if applicable)
+- [ ] CHANGELOG entry (if required)
+- [ ] Migration guide (if breaking changes)
+
+**Prepare PR Description:**
+```markdown
+## Description
+[Clear description of what changed and why]
+
+Fixes #{{issue_number}}
+
+## Type of Change
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📚 Documentation update
+- [ ] 🔧 Refactoring (no functional changes)
+
+## How Has This Been Tested?
+[Describe testing approach]
+
+### Test Configuration
+- **OS**: [e.g., macOS 14.0]
+- **Browser**: [e.g., Chrome 120]
+- **Node version**: [e.g., 18.17.0]
+
+## Checklist
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published
+
+## Screenshots (if applicable)
+[Add screenshots for UI changes]
+
+### Before
+[Screenshot or description]
+
+### After
+[Screenshot or description]
+
+## Additional Notes
+[Any additional context, trade-offs, or decisions made]
+```
+
+**Create Draft PR:**
+```bash
+# Push branch
+git push -u origin {{branch_name}}
+
+# Create PR
+gh pr create --draft --title "{{type}}: {{description}}" --body "{{pr_description}}"
+```
+
+## Common Patterns by Issue Type
+
+### Bug Fix Pattern
+1. Reproduce → Test → Fix → Verify → Document
+2. Focus on minimal change
+3. Prevent regression
+4. Document root cause
+
+### Feature Pattern
+1. Design → Test → Implement → Integrate → Document
+2. Consider extensibility
+3. Follow existing patterns
+4. Think about UX
+
+### Performance Pattern
+1. Benchmark → Analyze → Optimize → Measure → Document
+2. Profile before and after
+3. Consider trade-offs
+4. Document improvements
+
+### Security Pattern
+1. Assess → Patch → Test → Audit → Document
+2. Follow OWASP guidelines
+3. Consider attack vectors
+4. Document security implications
+
+## Quality Checklist
+
+Before marking issue as complete:
+- [ ] All acceptance criteria met
+- [ ] Tests written and passing
+- [ ] Code follows project conventions
+- [ ] No linting errors
+- [ ] Documentation updated
+- [ ] PR description complete
+- [ ] Screenshots added (if UI changes)
+- [ ] Performance impact considered
+- [ ] Security implications reviewed
+- [ ] Edge cases handled
+
+## Error Recovery
+
+If something goes wrong:
+1. **Git issues**: Use `git reflog` to recover
+2. **Test failures**: Run in isolation to debug
+3. **Build issues**: Clear cache and reinstall
+4. **Merge conflicts**: Rebase carefully
+5. **CI failures**: Check logs and reproduce locally
+
+## Communication
+
+**When to Ask for Help:**
+- Unclear requirements
+- Architectural decisions needed
+- Breaking changes required
+- Performance trade-offs
+- Security concerns
+
+**Update Issue with Progress:**
+```bash
+# Add comment to issue
+gh issue comment {{issue_number}} --body "Started implementation. [Progress update]"
+```
+
+## Instructions for AI
+
+1. **Understand Deeply**: Read issue, comments, and related issues
+2. **Plan Thoroughly**: Think through implementation before coding
+3. **Code Incrementally**: Small, testable changes
+4. **Test Continuously**: Run tests after each change
+5. **Follow Patterns**: Match existing code style and patterns
+6. **Handle Errors**: Every error should be handled gracefully
+7. **Document Clearly**: Future developers should understand
+8. **Consider Users**: Think about UX and edge cases
+9. **Optimize Wisely**: Don't premature optimize
+10. **Communicate Progress**: Update todos and add comments

@@ -1,0 +1,12 @@
+{
+  "project_name": "My Awesome App",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "description": "A Python backend with React frontend application",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "version": "0.1.0",
+  "python_version": "3.11",
+  "use_docker": ["yes", "no"],
+  "use_vector_search": ["yes", "no"],
+  "use_auth": ["yes", "no"]
+}

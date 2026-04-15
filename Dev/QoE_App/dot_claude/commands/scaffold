@@ -1,0 +1,392 @@
+# /scaffold Command
+
+Command: `/scaffold {{type}} {{name}} {{options}}`
+
+You are tasked with generating boilerplate code that perfectly matches the project's existing patterns and conventions. You will analyze the codebase to understand patterns, then generate consistent, production-ready code that seamlessly integrates with the existing architecture.
+
+**IMPORTANT: Study the existing codebase deeply. The generated code must look like it was written by the same team, following all conventions, patterns, and architectural decisions. Use extended thinking to ensure perfect consistency.**
+
+## Initial Setup
+1. Use the TodoWrite tool to create a task list for scaffolding:
+   - [ ] Analyze existing patterns for the scaffold type
+   - [ ] Identify naming conventions and file structure
+   - [ ] Understand dependencies and imports pattern
+   - [ ] Detect testing patterns and requirements
+   - [ ] Map integration points
+   - [ ] Generate all required files
+   - [ ] Create/update tests
+   - [ ] Update relevant indexes and exports
+
+2. Update your todo list as you progress through each phase
+
+## Available Scaffold Types:
+- `feature`: Complete feature with all layers (UI, logic, API)
+- `component`: UI component with tests and stories
+- `api`: API endpoint with controllers, services, and tests
+- `service`: Business logic service with interface
+- `hook`: Custom React hook with tests
+- `model`: Data model with validation and types
+- `migration`: Database migration with rollback
+- `module`: Complete module with public API
+
+## Core Pattern Detection Requirements
+
+### 1. Deep Pattern Analysis Phase
+Think deeply about:
+- How are similar items structured in this codebase?
+- What naming conventions are used?
+- What are the import/export patterns?
+- How are tests organized and written?
+- What documentation standards exist?
+- What are the error handling patterns?
+
+### 2. Convention Extraction
+Systematically identify:
+- File naming patterns (kebab-case, PascalCase, etc.)
+- Directory structure patterns
+- Code organization within files
+- Comment and documentation style
+- Type definition patterns
+- Test file placement and naming
+
+### 3. Architecture Alignment
+Ensure generated code:
+- Follows the established architecture (layered, vertical slice, etc.)
+- Uses the correct design patterns
+- Integrates with existing systems
+- Maintains consistency with dependencies
+- Respects module boundaries
+
+### 4. Quality Standards
+Generated code must:
+- Pass all linting rules
+- Include comprehensive types
+- Have appropriate error handling
+- Include necessary tests
+- Follow security best practices
+- Be performant and scalable
+
+## Sub-Prompts by Type
+
+### 1. Feature Scaffolding (`feature`)
+
+When the user requests: `/scaffold feature {{name}}`
+
+**Extended Analysis Phase:**
+```
+Think harder about:
+- How are features organized in this project?
+- What layers does each feature touch?
+- What's the data flow pattern?
+- How do features communicate?
+- What shared code do features use?
+```
+
+**Files to Generate:**
+```
+features/{{name}}/
+├── index.ts                 # Public API
+├── types.ts                 # Type definitions
+├── {{name}}.tsx            # Main component
+├── {{name}}.test.tsx       # Component tests
+├── use{{Name}}.ts          # Feature hook
+├── use{{Name}}.test.ts     # Hook tests
+├── {{name}}Service.ts      # Business logic
+├── {{name}}Service.test.ts # Service tests
+├── api.ts                  # API integration
+├── api.test.ts            # API tests
+└── README.md              # Feature documentation
+```
+
+**Integration Points:**
+- Router configuration
+- State management
+- API client registration
+- Type exports
+- Feature flags
+
+### 2. Component Scaffolding (`component`)
+
+When the user requests: `/scaffold component {{name}} {{options}}`
+
+**Extended Analysis Phase:**
+```
+Think about:
+- What component patterns are used (composition, compound, etc.)?
+- How are props typed?
+- What's the styling approach?
+- How are components documented?
+- What accessibility standards are followed?
+```
+
+**Options Handling:**
+- `with-state`: Include state management
+- `with-api`: Include data fetching
+- `with-form`: Include form handling
+- `compound`: Create compound component
+
+**Files to Generate:**
+```
+components/{{name}}/
+├── index.ts              # Exports
+├── {{name}}.tsx         # Component
+├── {{name}}.test.tsx    # Tests
+├── {{name}}.stories.tsx # Storybook (if used)
+├── {{name}}.module.css  # Styles (if CSS modules)
+└── types.ts             # Props interface
+```
+
+### 3. API Scaffolding (`api`)
+
+When the user requests: `/scaffold api {{path}} {{operations}}`
+
+**Extended Analysis Phase:**
+```
+Consider:
+- What's the API structure pattern?
+- How is authentication handled?
+- What validation approach is used?
+- How are errors standardized?
+- What's the response format?
+```
+
+**Operations Parsing:**
+- `CRUD`: Full Create, Read, Update, Delete
+- `CR`: Just Create and Read
+- Custom: `GET,POST,DELETE`
+
+**Files to Generate:**
+```
+api/{{path}}/
+├── controller.ts         # Request handlers
+├── controller.test.ts    # Controller tests
+├── service.ts           # Business logic
+├── service.test.ts      # Service tests
+├── validation.ts        # Input validation
+├── types.ts            # Request/Response types
+└── routes.ts           # Route definitions
+```
+
+### 4. Service Scaffolding (`service`)
+
+When the user requests: `/scaffold service {{name}}`
+
+**Pattern Detection:**
+- Dependency injection approach
+- Interface definition style
+- Error handling patterns
+- Logging conventions
+- Transaction handling
+
+**Files to Generate:**
+```
+services/{{name}}/
+├── index.ts                    # Public exports
+├── {{name}}Service.ts         # Implementation
+├── {{name}}Service.test.ts    # Unit tests
+├── {{name}}Service.interface.ts # Interface
+├── errors.ts                  # Custom errors
+└── types.ts                   # Type definitions
+```
+
+### 5. Hook Scaffolding (`hook`)
+
+When the user requests: `/scaffold hook {{name}}`
+
+**Hook Pattern Analysis:**
+- State management approach
+- Side effect handling
+- Memoization patterns
+- Error state handling
+- Loading state patterns
+
+**Generated Structure:**
+```typescript
+// use{{Name}}.ts
+import { useState, useEffect, useCallback } from 'react';
+import { {{Name}}Options, {{Name}}Result } from './types';
+
+export function use{{Name}}(options: {{Name}}Options = {}): {{Name}}Result {
+  // Implementation following project patterns
+}
+
+// use{{Name}}.test.ts
+import { renderHook, act } from '@testing-library/react-hooks';
+import { use{{Name}} } from './use{{Name}}';
+
+describe('use{{Name}}', () => {
+  // Tests following project patterns
+});
+```
+
+## Pattern Detection Examples
+
+### Detect Import Patterns
+```typescript
+// If project uses absolute imports:
+import { Button } from '@/components/Button';
+
+// If project uses relative imports:
+import { Button } from '../../components/Button';
+
+// If project uses barrel exports:
+import { Button, Input, Form } from '@/components';
+```
+
+### Detect Testing Patterns
+```typescript
+// If project uses React Testing Library:
+import { render, screen } from '@testing-library/react';
+
+// If project uses Enzyme:
+import { mount, shallow } from 'enzyme';
+
+// If project uses Vitest:
+import { describe, it, expect, vi } from 'vitest';
+```
+
+### Detect Error Handling
+```typescript
+// If project uses try-catch:
+try {
+  await doSomething();
+} catch (error) {
+  logger.error('Failed to do something', error);
+}
+
+// If project uses Result pattern:
+const result = await doSomething();
+if (result.isError) {
+  return Result.error(result.error);
+}
+```
+
+## Code Generation Output Format
+
+```markdown
+# Scaffolding: {{type}} - {{name}}
+
+## Pattern Analysis
+I've analyzed the codebase and identified the following patterns:
+- **Architecture**: [Layered/Vertical Slice/etc.]
+- **Naming**: [camelCase/PascalCase/kebab-case]
+- **Testing**: [Framework and patterns]
+- **Styling**: [CSS Modules/Styled Components/Tailwind]
+- **State**: [Redux/Zustand/Context]
+
+## Generated Files
+
+### 📁 `{{path}}/{{filename1}}`
+```{{language}}
+// Generated code following detected patterns
+```
+
+### 📁 `{{path}}/{{filename2}}`
+```{{language}}
+// Generated code following detected patterns
+```
+
+[Continue for all files...]
+
+## Integration Steps
+
+1. **Install Dependencies** (if any new ones needed):
+   ```bash
+   npm install {{dependencies}}
+   ```
+
+2. **Update Imports**:
+   - [ ] Add to `{{file}}` exports
+   - [ ] Register in `{{file}}` routes
+   - [ ] Update `{{file}}` types
+
+3. **Configuration**:
+   - [ ] Add to feature flags (if applicable)
+   - [ ] Update environment variables
+   - [ ] Configure in settings
+
+4. **Verification**:
+   ```bash
+   # Run these commands to verify
+   npm run type-check
+   npm run lint
+   npm run test {{name}}
+   ```
+
+## Usage Example
+
+```typescript
+// Example of how to use the scaffolded code
+import { {{Name}} } from '@/features/{{name}}';
+
+function MyComponent() {
+  return <{{Name}} />;
+}
+```
+
+## Next Steps
+
+1. Review generated code for project-specific adjustments
+2. Add business logic implementation
+3. Customize UI to match designs
+4. Add integration tests
+5. Update documentation
+
+## Customization Points
+
+The following areas are left for customization:
+- [ ] Business logic implementation
+- [ ] UI styling fine-tuning
+- [ ] API integration specifics
+- [ ] Advanced error handling
+- [ ] Performance optimizations
+```
+
+## Edge Cases to Handle
+
+### Naming Conflicts
+- Check if files already exist
+- Suggest alternative names
+- Handle namespace collisions
+
+### Dependency Detection
+- Identify required packages
+- Check version compatibility
+- Suggest installation commands
+
+### Pattern Conflicts
+- Handle mixed patterns in codebase
+- Choose most common pattern
+- Document decision rationale
+
+### Integration Complexity
+- Circular dependency prevention
+- Module boundary respect
+- Public API design
+
+## Instructions for AI
+
+1. **Study Deeply**: Analyze multiple examples before generating
+2. **Match Perfectly**: Generated code should be indistinguishable 
+3. **Think Integration**: Consider how code fits into the system
+4. **Follow Standards**: Respect all linting and formatting rules
+5. **Test Everything**: Generate comprehensive test coverage
+6. **Document Well**: Match the project's documentation style
+7. **Handle Edge Cases**: Consider error scenarios and validation
+8. **Optimize Imports**: Use the project's import conventions
+9. **Respect Architecture**: Don't break architectural boundaries
+10. **Enable Customization**: Leave clear extension points
+
+## Quality Checklist
+
+Ensure scaffolded code:
+- [ ] Matches existing code style exactly
+- [ ] Follows all naming conventions
+- [ ] Includes all necessary files
+- [ ] Has comprehensive tests
+- [ ] Integrates cleanly with existing code
+- [ ] Handles errors appropriately
+- [ ] Includes proper TypeScript types
+- [ ] Has necessary documentation
+- [ ] Passes all linting rules
+- [ ] Is production-ready

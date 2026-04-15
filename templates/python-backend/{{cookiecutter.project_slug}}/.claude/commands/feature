@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+# Claude AI: Create a new feature slice
+
+if [ -z "$1" ]; then
+    echo "Usage: .claude/commands/feature <feature_name>"
+    echo "Example: .claude/commands/feature user"
+    exit 1
+fi
+
+FEATURE_NAME="$1"
+FEATURE_PATH="src/features/$FEATURE_NAME"
+
+echo "🚀 Creating new feature: $FEATURE_NAME"
+
+# Create directory structure
+mkdir -p "$FEATURE_PATH/tests"
+
+# Create __init__.py
+cat > "$FEATURE_PATH/__init__.py" << EOF
+"""
+$FEATURE_NAME Feature
+
+This feature implements [describe purpose here].
+"""
+EOF
+
+# Create models.py
+cat > "$FEATURE_PATH/models.py" << 'EOF'
+"""Domain models for the $FEATURE_NAME feature."""
+from datetime import datetime
+from typing import Optional
+from uuid import UUID, uuid4
+
+# Add your domain models here
+# Follow the pattern in example_todo/models.py
+EOF
+
+# Create schemas.py
+cat > "$FEATURE_PATH/schemas.py" << 'EOF'
+"""Pydantic schemas for $FEATURE_NAME feature API."""
+from datetime import datetime
+from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, Field
+
+# Add your API schemas here
+# Follow the pattern in example_todo/schemas.py
+EOF
+
+# Create repository.py
+cat > "$FEATURE_PATH/repository.py" << 'EOF'
+"""Data access layer for $FEATURE_NAME feature."""
+from typing import Optional, List, Dict, Any
+from uuid import UUID
+
+# Add your repository implementation here
+# Follow the pattern in example_todo/repository.py
+EOF
+
+# Create service.py
+cat > "$FEATURE_PATH/service.py" << 'EOF'
+"""Business logic for $FEATURE_NAME feature."""
+from fastapi import Depends
+
+from .repository import ${FEATURE_NAME^}Repository
+
+class ${FEATURE_NAME^}Service:
+    """$FEATURE_NAME service handling business logic."""
+    
+    def __init__(self, repository: ${FEATURE_NAME^}Repository = Depends(${FEATURE_NAME^}Repository)):
+        self.repository = repository
+    
+    # Add your business logic methods here
+    # Follow the pattern in example_todo/service.py
+EOF
+
+# Create routes.py
+cat > "$FEATURE_PATH/routes.py" << 'EOF'
+"""REST API routes for $FEATURE_NAME feature."""
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from .service import ${FEATURE_NAME^}Service
+
+router = APIRouter(prefix="/${FEATURE_NAME}s")
+
+# Add your API endpoints here
+# Follow the pattern in example_todo/routes.py
+
+@router.get("/")
+async def list_${FEATURE_NAME}s(
+    service: ${FEATURE_NAME^}Service = Depends(${FEATURE_NAME^}Service),
+):
+    """List all ${FEATURE_NAME}s."""
+    return {"message": "List ${FEATURE_NAME}s endpoint"}
+EOF
+
+# Create test file
+cat > "$FEATURE_PATH/tests/test_${FEATURE_NAME}.py" << 'EOF'
+"""Tests for $FEATURE_NAME feature."""
+import pytest
+from fastapi.testclient import TestClient
+
+# Add your tests here
+# Follow the pattern in example_todo/tests/
+
+def test_list_${FEATURE_NAME}s(client: TestClient):
+    """Test listing ${FEATURE_NAME}s."""
+    response = client.get("/api/v1/${FEATURE_NAME}s/")
+    assert response.status_code == 200
+EOF
+
+echo "✅ Feature created at $FEATURE_PATH"
+echo ""
+echo "Next steps:"
+echo "1. Implement the models, schemas, repository, service, and routes"
+echo "2. Add the router to src/main.py:"
+echo "   from src.features.$FEATURE_NAME.routes import router as ${FEATURE_NAME}_router"
+echo "   app.include_router(${FEATURE_NAME}_router, prefix=\"/api/v1\", tags=[\"$FEATURE_NAME\"])"
+echo "3. Write tests in $FEATURE_PATH/tests/"
+echo "4. Update the API documentation"

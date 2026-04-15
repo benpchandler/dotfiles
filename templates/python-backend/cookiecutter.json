@@ -1,0 +1,12 @@
+{
+  "project_name": "My Backend API",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_description": "A FastAPI backend with REST and GraphQL support",
+  "author_name": "Your Name",
+  "author_email": "your.email@example.com",
+  "python_version": "3.12",
+  "port": "8000",
+  "include_postgres": ["n", "y"],
+  "github_username": "yourusername",
+  "_extensions": ["jinja2.ext.do", "jinja2.ext.loopcontrols"]
+}

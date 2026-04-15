@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# Initialize a new Python project with AI-optimized Ruff configuration
+
+set -euo pipefail
+
+PROJECT_NAME="${1:-}"
+if [[ -z "$PROJECT_NAME" ]]; then
+    echo "Usage: init-python-project <project-name>"
+    exit 1
+fi
+
+echo "🚀 Initializing Python project: $PROJECT_NAME"
+
+# Create project directory
+mkdir -p "$PROJECT_NAME"
+cd "$PROJECT_NAME"
+
+# Initialize with uv
+echo "📦 Setting up uv package manager..."
+uv init --package
+
+# Add standard dependencies
+echo "📚 Adding core dependencies..."
+uv add fastapi "uvicorn[standard]" pydantic pydantic-settings httpx
+uv add --dev pytest pytest-asyncio pytest-cov ruff mypy pre-commit
+
+# Copy Ruff configuration
+echo "🔧 Setting up Ruff configuration..."
+if [[ -f ~/.config/ruff/pyproject.toml.template ]]; then
+    # Merge the Ruff config into the existing pyproject.toml
+    echo "" >> pyproject.toml
+    cat ~/.config/ruff/pyproject.toml.template >> pyproject.toml
+else
+    echo "⚠️  Ruff template not found at ~/.config/ruff/pyproject.toml.template"
+fi
+
+# Create basic project structure
+echo "📁 Creating project structure..."
+mkdir -p src tests docs
+
+# Create .gitignore
+cat > .gitignore << 'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project
+.env
+*.log
+*.db
+*.sqlite3
+
+# Coverage
+.coverage
+htmlcov/
+*.cover
+
+# OS
+.DS_Store
+Thumbs.db
+EOF
+
+# Create .env.example
+cat > .env.example << 'EOF'
+# Application Configuration
+DEBUG=false
+
+# Database
+DATABASE_URL=postgresql://username:password@localhost/dbname
+
+# External APIs
+API_KEY=your_api_key_here
+EOF
+
+# Create pre-commit config
+cat > .pre-commit-config.yaml << 'EOF'
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-all]
+EOF
+
+# Initialize git
+echo "🔄 Initializing git repository..."
+git init
+git add .
+git commit -m "feat: initialize $PROJECT_NAME with AI-optimized configuration"
+
+# Install pre-commit hooks
+echo "🪝 Installing pre-commit hooks..."
+uv run pre-commit install
+
+echo "✅ Project initialized successfully!"
+echo ""
+echo "Next steps:"
+echo "  cd $PROJECT_NAME"
+echo "  uv run pytest                    # Run tests"
+echo "  uv run ruff check . --fix        # Lint and fix"
+echo "  uv run mypy .                    # Type check"
+echo "  uv run uvicorn src.main:app      # Run FastAPI"

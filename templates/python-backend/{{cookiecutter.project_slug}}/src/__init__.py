@@ -1,0 +1,1 @@
+"""{{ cookiecutter.project_name }} - A FastAPI backend with vertical slice architecture."""

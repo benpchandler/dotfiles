@@ -1,0 +1,395 @@
+# /migrate Command
+
+Command: `/migrate {{from}} {{to}} {{scope}}`
+
+You are tasked with creating a comprehensive migration plan to transform code from one technology/pattern to another. You will analyze the current implementation, design the migration strategy, and create a detailed execution plan with rollback procedures.
+
+**IMPORTANT: Think deeply about migration risks, dependencies, and breaking changes. Consider the impact on the entire codebase and team. Use extended thinking to ensure a safe, incremental migration.**
+
+## Initial Setup
+1. Use the TodoWrite tool to create a task list for your migration planning:
+   - [ ] Analyze current implementation scope
+   - [ ] Identify all dependencies and impacts
+   - [ ] Assess breaking changes
+   - [ ] Design migration strategy
+   - [ ] Create incremental migration phases
+   - [ ] Plan rollback procedures
+   - [ ] Estimate effort and risks
+   - [ ] Generate migration scripts/codemods
+
+2. Update your todo list as you progress through each phase
+
+## Common Migration Types:
+- UI Libraries: `chakra` → `shadcn`, `material-ui` → `tailwind`
+- Testing: `jest` → `vitest`, `mocha` → `jest`
+- API Versions: `v1` → `v2`, `rest` → `graphql`
+- Frameworks: `cra` → `vite`, `webpack` → `vite`
+- State Management: `redux` → `zustand`, `mobx` → `zustand`
+- Styling: `css` → `tailwind`, `styled-components` → `tailwind`
+
+## Core Analysis Requirements (ALL migration types)
+
+### 1. Impact Analysis Phase
+Think deeply about:
+- What will break during migration?
+- Which teams/features are affected?
+- What are the performance implications?
+- What training will be needed?
+- What tooling changes are required?
+
+### 2. Dependency Mapping
+Systematically identify:
+- Direct dependencies on the old system
+- Indirect dependencies through shared code
+- Build system impacts
+- Testing infrastructure changes
+- CI/CD pipeline updates needed
+- Third-party integrations affected
+
+### 3. Risk Assessment
+Evaluate:
+- **Technical Risks**: Breaking changes, compatibility issues
+- **Operational Risks**: Downtime, performance degradation
+- **Team Risks**: Learning curve, productivity impact
+- **Business Risks**: Feature parity, user experience
+
+### 4. Migration Principles
+Ensure migration is:
+- **Incremental**: Can be done in small, safe steps
+- **Reversible**: Each step can be rolled back
+- **Testable**: Each phase can be validated
+- **Observable**: Progress and issues are visible
+- **Documented**: Clear guides for the team
+
+## Sub-Prompts by Migration Type
+
+### 1. UI Library Migration
+
+When migrating UI libraries (e.g., `/migrate chakra shadcn components/Button`):
+
+**Extended Analysis Phase:**
+```
+Think harder about:
+- Component API differences
+- Styling system changes
+- Theme/design token migration
+- Accessibility implications
+- Bundle size impacts
+- SSR compatibility
+```
+
+**Migration Complexity Factors:**
+- Number of components to migrate
+- Custom theme modifications
+- Component composition patterns
+- Animation/transition differences
+- Form handling changes
+- Layout system differences
+
+**Mermaid Diagram Example:**
+```mermaid
+graph LR
+    subgraph "Phase 1: Setup"
+        A[Install new library] --> B[Setup build config]
+        B --> C[Create component mapping]
+    end
+    
+    subgraph "Phase 2: Migration"
+        D[Migrate shared components] --> E[Migrate page components]
+        E --> F[Update tests]
+    end
+    
+    subgraph "Phase 3: Cleanup"
+        G[Remove old library] --> H[Optimize bundle]
+    end
+    
+    C --> D
+    F --> G
+```
+
+### 2. Testing Framework Migration
+
+When migrating testing frameworks (e.g., `/migrate jest vitest tests/`):
+
+**Extended Analysis Phase:**
+```
+Think deeply about:
+- Test runner API differences
+- Assertion library compatibility
+- Mock/spy system changes
+- Configuration migration
+- Coverage tool compatibility
+- CI integration updates
+```
+
+**Key Considerations:**
+- Test file patterns
+- Global setup/teardown
+- Custom matchers
+- Snapshot testing
+- Module mocking approach
+- Performance benchmarks
+
+### 3. API Version Migration
+
+When migrating API versions (e.g., `/migrate v1 v2 api/`):
+
+**Extended Analysis Phase:**
+```
+Think about:
+- Endpoint structure changes
+- Request/response format changes
+- Authentication updates
+- Rate limiting differences
+- Deprecation timeline
+- Client SDK updates
+```
+
+**Backward Compatibility Strategy:**
+- Dual-running period
+- Response transformation layer
+- Gradual client migration
+- Feature flags for rollout
+- Monitoring both versions
+
+### 4. Build Tool Migration
+
+When migrating build tools (e.g., `/migrate webpack vite`):
+
+**Extended Analysis Phase:**
+```
+Consider:
+- Plugin ecosystem differences
+- Configuration translation
+- Development workflow changes
+- Build performance impacts
+- Hot reload compatibility
+- Production optimization differences
+```
+
+## Migration Plan Output Format
+
+```markdown
+# Migration Plan: {{from}} → {{to}} for {{scope}}
+
+## Executive Summary
+[2-3 sentence overview of the migration goal and business value]
+
+**Total Effort**: [T-shirt size: S/M/L/XL/XXL]
+**Risk Level**: [Low/Medium/High]
+**Recommended Timeline**: [X weeks/months]
+**Team Impact**: [Minimal/Moderate/Significant]
+
+## Current State Analysis
+
+### Scope Inventory
+- **Components/Files**: [X total]
+- **Lines of Code**: [Y]
+- **Direct Dependencies**: [List key dependencies]
+- **Test Coverage**: [Z%]
+
+### Dependency Graph
+[Mermaid diagram showing current dependencies]
+
+### Pain Points with Current System
+1. [Pain point 1 and impact]
+2. [Pain point 2 and impact]
+3. [Pain point 3 and impact]
+
+## Migration Strategy
+
+### Approach: [Incremental/Big Bang/Parallel Run]
+[Justification for chosen approach]
+
+### Success Criteria
+- [ ] All tests passing with new system
+- [ ] Performance benchmarks maintained
+- [ ] Zero downtime during migration
+- [ ] Team trained on new system
+- [ ] Documentation updated
+
+### Prerequisites
+- [ ] [Prerequisite 1]
+- [ ] [Prerequisite 2]
+- [ ] [Tool/library installation]
+
+## Migration Phases
+
+### Phase 0: Preparation [Size: S]
+**Duration**: [X days]
+**Risk**: Low
+
+Tasks:
+- [ ] Install {{to}} alongside {{from}}
+- [ ] Setup dual build configuration
+- [ ] Create migration guide
+- [ ] Setup monitoring/metrics
+- [ ] Train pilot team
+
+**Rollback**: Simply remove new configuration
+
+### Phase 1: Foundation [Size: M]
+**Duration**: [X days/weeks]
+**Risk**: Low-Medium
+
+Tasks:
+- [ ] Migrate shared utilities
+- [ ] Create compatibility layer
+- [ ] Migrate first component/module
+- [ ] Validate in staging environment
+- [ ] Update CI/CD pipeline
+
+**Validation**:
+- All existing tests pass
+- New system tests pass
+- Performance metrics stable
+
+**Rollback**: Revert compatibility layer
+
+### Phase 2: Core Migration [Size: L]
+**Duration**: [X weeks]
+**Risk**: Medium
+
+Tasks:
+- [ ] Migrate [component group 1]
+- [ ] Migrate [component group 2]
+- [ ] Update integration tests
+- [ ] Progressive rollout (10% → 50% → 100%)
+
+**Validation Checkpoints**:
+- [ ] After each component group
+- [ ] Performance testing
+- [ ] User acceptance testing
+
+**Rollback**: Feature flags to revert to old system
+
+### Phase 3: Completion [Size: M]
+**Duration**: [X days/weeks]
+**Risk**: Low
+
+Tasks:
+- [ ] Remove {{from}} dependencies
+- [ ] Clean up compatibility layers
+- [ ] Optimize bundle/build
+- [ ] Update all documentation
+- [ ] Team training completion
+
+**Validation**:
+- Bundle size reduced
+- Build time improved
+- All teams comfortable
+
+## Risk Mitigation
+
+### Technical Risks
+| Risk | Probability | Impact | Mitigation |
+|------|------------|--------|------------|
+| [Risk 1] | High/Med/Low | High/Med/Low | [Mitigation strategy] |
+| [Risk 2] | High/Med/Low | High/Med/Low | [Mitigation strategy] |
+
+### Contingency Plans
+1. **If timeline slips**: [Plan]
+2. **If major bugs found**: [Plan]
+3. **If performance degrades**: [Plan]
+
+## Team Enablement
+
+### Training Plan
+1. **Week 1**: Core team deep dive
+2. **Week 2**: Hands-on workshops
+3. **Week 3**: Pair programming sessions
+4. **Ongoing**: Office hours support
+
+### Documentation Updates
+- [ ] Migration guide
+- [ ] New system best practices
+- [ ] Troubleshooting guide
+- [ ] Performance tuning guide
+
+## Tooling & Automation
+
+### Migration Scripts
+```bash
+# Example codemod or migration script
+npx {{migration-tool}} --from {{from}} --to {{to}} {{scope}}
+```
+
+### Validation Scripts
+```bash
+# Automated validation
+npm run validate:migration
+```
+
+### Monitoring Setup
+- [ ] Performance metrics dashboard
+- [ ] Error rate monitoring
+- [ ] Usage analytics
+- [ ] A/B test results
+
+## Cost-Benefit Analysis
+
+### Costs
+- **Development Time**: [X person-weeks]
+- **Training Time**: [Y hours per developer]
+- **Temporary Complexity**: [Description]
+- **Risk Exposure**: [Description]
+
+### Benefits
+- **Performance**: [Quantified improvement]
+- **Developer Experience**: [Description]
+- **Maintenance**: [Reduced by X%]
+- **Future Flexibility**: [Description]
+
+## Post-Migration
+
+### Cleanup Tasks
+- [ ] Remove old dependencies
+- [ ] Archive old documentation
+- [ ] Update onboarding materials
+- [ ] Celebrate success! 🎉
+
+### Lessons Learned Session
+- Schedule retrospective
+- Document what worked well
+- Identify improvement areas
+- Share knowledge with other teams
+
+## Appendices
+
+### A. Detailed Component Mapping
+[Table showing old → new component mappings]
+
+### B. Configuration Changes
+[Before/after configuration examples]
+
+### C. Common Gotchas
+[List of issues found during pilot]
+
+### D. Performance Benchmarks
+[Metrics comparison table]
+```
+
+## Instructions for AI
+
+1. **Use Extended Thinking**: Consider all aspects of the migration deeply
+2. **Be Conservative**: Overestimate effort and risks rather than underestimate
+3. **Think Incrementally**: Break down into smallest safe steps
+4. **Consider the Team**: Account for learning curves and resistance to change
+5. **Plan for Rollback**: Every phase must be reversible
+6. **Document Everything**: Migration knowledge is valuable for future
+7. **Automate Where Possible**: Create scripts and codemods
+8. **Test Thoroughly**: Each phase needs comprehensive validation
+9. **Communicate Clearly**: Use visuals and examples
+10. **Monitor Continuously**: Set up observability before starting
+
+## Quality Checklist
+
+Ensure the migration plan addresses:
+- [ ] All breaking changes identified
+- [ ] Performance impact assessed
+- [ ] Team training planned
+- [ ] Rollback procedures clear
+- [ ] Success metrics defined
+- [ ] Timeline realistic
+- [ ] Risks documented
+- [ ] Benefits quantified

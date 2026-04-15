@@ -1,0 +1,167 @@
+# ===== SECRETS & ENVIRONMENT =====
+[[ -f ~/.env ]] && source ~/.env
+export GITHUB_TOKEN=$(gh auth token 2>/dev/null)
+export EDITOR="hx"
+export VISUAL="hx"
+
+# Claude Code plugin env (ring plugin needs this for pre-analysis binary)
+export CLAUDE_PLUGIN_ROOT="$HOME/.claude/plugins/marketplaces/ring/default"
+
+# Ghostty terminal compatibility
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    export TERM=xterm-256color
+fi
+
+# ===== PATH =====
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="$PATH:$HOME/.lmstudio/bin"
+export PATH="$HOME/.config/zellij/scripts:$PATH"
+
+# ===== TOOL INITIALIZATION =====
+eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(mise activate zsh --shims)"
+eval "$(zoxide init zsh)"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]] && source "$HOME/google-cloud-sdk/path.zsh.inc"
+[[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]] && source "$HOME/google-cloud-sdk/completion.zsh.inc"
+[[ -f "$HOME/.config/broot/launcher/bash/br" ]] && source "$HOME/.config/broot/launcher/bash/br"
+
+# ===== SHELL PLUGINS (load order matters!) =====
+# 1. Autocomplete: real-time dropdown completions — must load first
+fpath=($HOME/.zsh/completions $fpath)
+source /opt/homebrew/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+# 2. fzf-tab: fuzzy completion menu with previews (replaces default tab menu)
+source /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh
+
+# 3. Autosuggestions: ghosted inline suggestions
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=245'
+
+# 4. Syntax highlighting: color feedback while typing — must load last
+#    Filter known zsh-autocomplete widget warnings (completion widgets that
+#    syntax-highlighting can't wrap — cosmetic, not functional)
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2> >(grep -v 'unhandled ZLE widget\|This is sometimes caused' >&2)
+ZSH_HIGHLIGHT_STYLES[default]='fg=white'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=245'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=cyan,bold'
+ZSH_HIGHLIGHT_STYLES[function]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[command]='fg=82'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=82,underline'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=82'
+ZSH_HIGHLIGHT_STYLES[path]='fg=white,underline'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=blue'
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=magenta'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[assign]='fg=white'
+
+# ===== COMPLETION STYLING =====
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors \
+  'ma=48;5;238;1;37' \
+  'di=1;36' \
+  'ln=1;35' \
+  'ex=1;32' \
+  'fi=1;37'
+zstyle ':completion:*:descriptions' format '%F{cyan}%B%d%b%f'
+zstyle ':completion:*:messages' format '%F{yellow}%d%f'
+zstyle ':completion:*:warnings' format '%F{red}No matches for: %d%f'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*:processes' command 'ps -u $USER -o pid,user,comm -w -w'
+
+# ===== ALIASES =====
+# File listing (eza)
+alias ls="eza --icons"
+alias ll="eza -la --icons"
+alias lt="eza --tree --icons"
+alias la='eza --icons -A'
+alias l='eza --icons -F'
+
+# Tools
+alias zl="zellij"
+alias zellij='TERM=xterm-256color zellij'
+alias shuf="gshuf"
+alias codex='command codex --search --sandbox danger-full-access'
+
+# Claude Code
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+alias cc='claude -w --tmux'
+alias notif='notify_command_done'
+
+# Machine-local aliases (project-specific, not committed)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# ===== FUNCTIONS =====
+# Claude Code multi-account: runs claude with work credentials
+claude-work() {
+  CLAUDE_CONFIG_DIR="$HOME/.claude-work" claude -w --tmux "$@"
+}
+
+# Zellij dev environment
+zdev() {
+  if [[ -n "$ZELLIJ" ]]; then
+    echo "Already inside Zellij. Exit first or open a new Ghostty window."
+    return 1
+  fi
+  zellij --layout workspace
+}
+
+# Command notification wrapper: `notif long-command args...`
+notify_command_done() {
+    local ghostty_icon="file:///Applications/Ghostty.app"
+    local start_time=$(date +%s)
+    "$@"
+    local exit_code=$?
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+
+    if [ $exit_code -eq 0 ]; then
+        terminal-notifier \
+            -title "Ghostty" \
+            -message "Command completed successfully in ${duration}s" \
+            -appIcon "$ghostty_icon" \
+            -sound Pop
+    else
+        terminal-notifier \
+            -title "Ghostty" \
+            -message "Command failed (exit code ${exit_code}) after ${duration}s" \
+            -appIcon "$ghostty_icon" \
+            -sound Pop
+    fi
+
+    return $exit_code
+}
+
+notif_test_sounds() {
+    local ghostty_icon="file:///Applications/Ghostty.app"
+    local sounds=("$@")
+
+    if [ ${#sounds[@]} -eq 0 ]; then
+        sounds=(Glass Pop Funk Hero Frog Submarine Bottle Morse Tink)
+    fi
+
+    for sound in "${sounds[@]}"; do
+        terminal-notifier \
+            -title "Ghostty" \
+            -message "Testing sound: ${sound}" \
+            -appIcon "$ghostty_icon" \
+            -sound "$sound"
+        sleep 2
+    done
+}
+
+# ===== PROMPT (must be last) =====
+eval "$(starship init zsh)"
+

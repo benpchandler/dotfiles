@@ -1,0 +1,15 @@
+
+# Kiro CLI pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.pre.zsh"
+
+# Core PATH setup (runs once per login, before .zshrc)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# OrbStack CLI integration
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# Obsidian CLI
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zprofile.post.zsh"

@@ -1,0 +1,115 @@
+# Default Ruff configuration for AI-assisted Python development
+# This template is managed by chezmoi and used for new projects
+
+[tool.ruff]
+# Same as Black
+line-length = 88
+indent-width = 4
+
+# Target Python - update based on project needs
+target-version = "py312"
+
+# Include source directory
+src = ["src"]
+
+[tool.ruff.lint]
+# Enable comprehensive rule sets for AI-assisted development
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings  
+    "F",     # Pyflakes
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "I",     # isort
+    "N",     # pep8-naming
+    "S",     # flake8-bandit (security)
+    "FBT",   # flake8-boolean-trap
+    "A",     # flake8-builtins
+    "C4",    # flake8-comprehensions
+    "DTZ",   # flake8-datetimez
+    "T10",   # flake8-debugger
+    "EM",    # flake8-errmsg
+    "ISC",   # flake8-implicit-str-concat
+    "ICN",   # flake8-import-conventions
+    "PIE",   # flake8-pie
+    "PT",    # flake8-pytest-style
+    "RET",   # flake8-return
+    "SLOT",  # flake8-slots
+    "ASYNC", # flake8-async
+    "ANN",   # flake8-annotations (type checking)
+    "PERF",  # Perflint (performance)
+    "RUF",   # Ruff-specific rules
+    "TRY",   # tryceratops (exception handling)
+    "D",     # pydocstyle (docstring checks)
+]
+
+# Minimal ignores - be strict!
+ignore = [
+    "E501",    # line-too-long (formatter handles this)
+    "B008",    # function-call-in-default-argument (FastAPI Depends)
+    "ANN401",  # any-type (sometimes needed)
+    "S101",    # assert-used (needed in tests)
+    "DTZ005",  # datetime-now-no-tzinfo (ok for logs)
+]
+
+# Allow autofix for all enabled rules
+fixable = ["ALL"]
+
+# Allow unused variables when underscore-prefixed
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+# Allow imports in __init__.py files
+"__init__.py" = ["E402", "F401"]
+# Tests have different requirements
+"tests/**/*.py" = [
+    "S101",     # assertions are ok in tests
+    "PLR2004",  # magic values are ok in tests
+    "ANN",      # type annotations optional in tests
+    "TRY",      # exception handling can be looser
+    "PERF",     # performance doesn't matter in tests
+]
+
+[tool.ruff.lint.isort]
+# Group imports by type
+known-first-party = ["src"]
+
+[tool.ruff.lint.flake8-pytest-style]
+# Enforce pytest best practices
+fixture-parentheses = true
+mark-parentheses = true
+
+[tool.ruff.lint.flake8-annotations]
+# Allow some flexibility for overrides and complex types
+allow-star-arg-any = true
+suppress-none-returning = true
+
+[tool.ruff.lint.pydocstyle]
+# Use NumPy-style docstrings for better AI parsing
+convention = "numpy"
+
+[tool.ruff.format]
+# Use double quotes like Black
+quote-style = "double"
+
+# Format docstring code examples
+docstring-code-format = true
+
+# Line ending auto-detection
+line-ending = "auto"
+
+[tool.mypy]
+# Strict type checking to complement Ruff
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true

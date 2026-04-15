@@ -1,0 +1,421 @@
+# /analyze Command
+
+Command: `/analyze {{aspect}} {{scope}}`
+
+You are tasked with performing deep code analysis to identify issues, opportunities, and provide actionable recommendations. You will examine the code from multiple perspectives and generate a comprehensive report with specific, prioritized improvements.
+
+**IMPORTANT: Think deeply about the analysis. Look for subtle issues, systemic problems, and opportunities that might not be immediately obvious. Use extended thinking to uncover insights beyond surface-level observations.**
+
+## Initial Setup
+1. Use the TodoWrite tool to create a task list for your analysis:
+   - [ ] Gather relevant code and context
+   - [ ] Perform initial scan for obvious issues
+   - [ ] Deep dive into specific aspect areas
+   - [ ] Identify patterns and anti-patterns
+   - [ ] Benchmark against best practices
+   - [ ] Create visual representations
+   - [ ] Prioritize findings
+   - [ ] Generate actionable recommendations
+
+2. Update your todo list as you progress through each phase
+
+## Available Analysis Aspects:
+- `performance`: Identify bottlenecks and optimization opportunities
+- `security`: Find vulnerabilities and security risks
+- `architecture`: Evaluate design patterns and structure
+- `quality`: Assess code quality and maintainability
+- `complexity`: Analyze and reduce complexity
+- `dependencies`: Review dependency health and risks
+- `accessibility`: Evaluate UI accessibility compliance
+- `testing`: Assess test coverage and quality
+
+## Core Analysis Requirements (ALL aspects)
+
+### 1. Holistic Analysis Phase
+Think deeply about:
+- What are the non-obvious problems?
+- What patterns indicate future issues?
+- How do different parts interact?
+- What are the second-order effects?
+- Where is technical debt accumulating?
+
+### 2. Benchmarking Against Best Practices
+Compare against:
+- Industry standards
+- Framework recommendations
+- Security guidelines
+- Performance benchmarks
+- Accessibility standards
+
+### 3. Root Cause Analysis
+For each issue found:
+- Why does this problem exist?
+- What caused it initially?
+- Why hasn't it been fixed?
+- What prevents the ideal solution?
+
+### 4. Impact Assessment
+Evaluate:
+- **User Impact**: How does this affect end users?
+- **Developer Impact**: How does this affect development speed?
+- **Business Impact**: What are the business consequences?
+- **Technical Impact**: What are the system-wide effects?
+
+## Sub-Prompts by Aspect
+
+### 1. Performance Analysis (`performance`)
+
+When the user requests: `/analyze performance {{scope}}`
+
+**Extended Analysis Phase:**
+```
+Think harder about:
+- What are the hidden performance costs?
+- Which operations scale poorly?
+- What are the memory leak risks?
+- Where are unnecessary re-renders/recalculations?
+- What caching opportunities exist?
+```
+
+**Key Metrics to Analyze:**
+- Time complexity of algorithms
+- Space complexity and memory usage
+- Network request patterns
+- Bundle size and code splitting
+- Render performance (for UI)
+- Database query efficiency
+- Caching effectiveness
+
+**Mermaid Diagram Example:**
+```mermaid
+graph TB
+    subgraph "Performance Bottlenecks"
+        A[Slow API Calls] --> B[User Wait Time]
+        C[Large Bundle Size] --> D[Slow Initial Load]
+        E[Inefficient Queries] --> F[Database Load]
+        G[Memory Leaks] --> H[App Crashes]
+    end
+    
+    subgraph "Impact"
+        B --> I[Poor User Experience]
+        D --> I
+        F --> J[Infrastructure Costs]
+        H --> I
+    end
+```
+
+**Performance Profiling Tools:**
+- Code instrumentation points
+- Benchmark comparisons
+- Load testing scenarios
+- Memory profiling results
+
+### 2. Security Analysis (`security`)
+
+When the user requests: `/analyze security {{scope}}`
+
+**Extended Analysis Phase:**
+```
+Think deeply about:
+- What are the attack vectors?
+- How could this be exploited?
+- What data is at risk?
+- Are there supply chain vulnerabilities?
+- What about social engineering risks?
+```
+
+**Security Checklist:**
+- [ ] Input validation and sanitization
+- [ ] Authentication and authorization
+- [ ] Data encryption (at rest and in transit)
+- [ ] SQL injection prevention
+- [ ] XSS protection
+- [ ] CSRF protection
+- [ ] Dependency vulnerabilities
+- [ ] Secrets management
+- [ ] Error handling (no data leaks)
+- [ ] Rate limiting
+- [ ] Security headers
+
+**OWASP Top 10 Mapping:**
+Map findings to OWASP categories for prioritization
+
+### 3. Architecture Analysis (`architecture`)
+
+When the user requests: `/analyze architecture {{scope}}`
+
+**Extended Analysis Phase:**
+```
+Think about:
+- Is the architecture solving the right problems?
+- Where are the coupling points?
+- How does this scale?
+- What are the failure modes?
+- Where is complexity unnecessary?
+```
+
+**Architecture Evaluation Criteria:**
+- **Modularity**: How well separated are concerns?
+- **Scalability**: Can this handle 10x growth?
+- **Maintainability**: How easy to modify?
+- **Testability**: How easy to test?
+- **Resilience**: How does it handle failures?
+
+**Mermaid Diagram Example:**
+```mermaid
+graph LR
+    subgraph "Current Architecture Issues"
+        A[Tight Coupling] --> B[Hard to Change]
+        C[No Clear Boundaries] --> D[Feature Confusion]
+        E[Shared State] --> F[Race Conditions]
+    end
+    
+    subgraph "Recommended Architecture"
+        G[Clear Modules] --> H[Easy Updates]
+        I[Defined Interfaces] --> J[Clear Contracts]
+        K[Isolated State] --> L[Predictable Behavior]
+    end
+```
+
+### 4. Code Quality Analysis (`quality`)
+
+When the user requests: `/analyze quality {{scope}}`
+
+**Extended Analysis Phase:**
+```
+Consider:
+- What makes this code hard to understand?
+- Where are the maintenance hotspots?
+- What patterns lead to bugs?
+- How consistent is the codebase?
+- What knowledge is implicit?
+```
+
+**Quality Metrics:**
+- Cyclomatic complexity
+- Code duplication
+- Test coverage
+- Documentation coverage
+- Linting violations
+- Type safety coverage
+- Dead code detection
+
+### 5. Complexity Analysis (`complexity`)
+
+When the user requests: `/analyze complexity {{scope}}`
+
+**Cognitive Complexity Factors:**
+- Nested conditionals
+- Mixed abstraction levels
+- Unclear naming
+- Hidden side effects
+- Implicit dependencies
+- Over-engineering
+
+## Analysis Report Output Format
+
+```markdown
+# Analysis Report: {{aspect}} - {{scope}}
+
+## Executive Summary
+[2-3 paragraph overview of key findings and their business impact]
+
+**Overall Health Score**: [A-F]
+**Critical Issues Found**: [X]
+**High Priority Issues**: [Y]
+**Quick Wins Available**: [Z]
+
+## Key Findings
+
+### 🔴 Critical Issues
+Issues requiring immediate attention due to high risk or impact.
+
+#### 1. [Issue Name]
+- **Location**: `file:line`
+- **Description**: [What's wrong]
+- **Impact**: [Why it matters]
+- **Evidence**: 
+  ```code
+  // Problem code example
+  ```
+- **Recommendation**: [Specific fix]
+- **Effort**: [XS/S/M/L/XL]
+- **Priority**: P0
+
+### 🟡 High Priority Issues
+Important issues that should be addressed soon.
+
+#### 1. [Issue Name]
+[Same structure as above]
+
+### 🟢 Opportunities
+Improvements that would provide value but aren't urgent.
+
+#### 1. [Opportunity Name]
+[Same structure as above]
+
+## Detailed Analysis
+
+### [Aspect-Specific Section]
+[Deep dive into the specific aspect analyzed]
+
+### Patterns Observed
+1. **[Pattern Name]**: [Description and examples]
+2. **[Anti-pattern Name]**: [Description and locations]
+
+### Root Causes
+[Analysis of why these issues exist]
+
+## Metrics & Visualizations
+
+### Current State Metrics
+| Metric | Current | Target | Industry Avg |
+|--------|---------|--------|--------------|
+| [Metric 1] | [Value] | [Value] | [Value] |
+| [Metric 2] | [Value] | [Value] | [Value] |
+
+### Trend Analysis
+[Mermaid diagram showing trends or distribution]
+
+### Hotspot Map
+[Visual representation of problem areas]
+
+## Recommendations
+
+### Quick Wins (< 1 day each)
+1. **[Action]**: [Expected impact]
+2. **[Action]**: [Expected impact]
+
+### Short-term Improvements (1-5 days)
+1. **[Action]**: [Expected impact]
+2. **[Action]**: [Expected impact]
+
+### Long-term Initiatives (> 5 days)
+1. **[Initiative]**: [Strategic value]
+2. **[Initiative]**: [Strategic value]
+
+## Implementation Roadmap
+
+### Phase 1: Immediate Actions [1 week]
+- [ ] Fix critical security vulnerabilities
+- [ ] Address performance bottlenecks
+- [ ] Quick wins implementation
+
+### Phase 2: Systematic Improvements [2-4 weeks]
+- [ ] Refactor problem areas
+- [ ] Implement monitoring
+- [ ] Update documentation
+
+### Phase 3: Strategic Changes [1-3 months]
+- [ ] Architecture improvements
+- [ ] Process changes
+- [ ] Team training
+
+## Risk Analysis
+
+### If Issues Not Addressed
+1. **[Risk]**: [Probability] × [Impact] = [Risk Score]
+2. **[Risk]**: [Probability] × [Impact] = [Risk Score]
+
+### Mitigation Strategies
+[How to reduce risks while implementing fixes]
+
+## Tooling Recommendations
+
+### Automated Detection
+```bash
+# Commands/tools to continuously monitor these issues
+npm run analyze:{{aspect}}
+```
+
+### IDE Integration
+- [Plugin/extension recommendations]
+- [Configuration suggestions]
+
+### CI/CD Integration
+- [Automated checks to add]
+- [Quality gates to implement]
+
+## Team Enablement
+
+### Knowledge Sharing
+- Key concepts team should understand
+- Best practices to adopt
+- Anti-patterns to avoid
+
+### Training Resources
+- [Recommended courses/books]
+- [Internal documentation to create]
+- [Pair programming focus areas]
+
+## Success Metrics
+
+### How to Measure Improvement
+- **Before**: [Current metrics]
+- **Target**: [Goal metrics]
+- **Timeline**: [Expected timeline]
+
+### Monitoring Dashboard
+[What to track continuously]
+
+## Appendices
+
+### A. Detailed Code Examples
+[Extended examples of problems and solutions]
+
+### B. Tool Configuration
+[Specific configuration files/settings]
+
+### C. References
+- [Relevant documentation]
+- [Best practice guides]
+- [Similar case studies]
+```
+
+## Special Considerations by Aspect
+
+### Performance Analysis Output
+Include:
+- Flame graphs or performance traces
+- Benchmark comparisons
+- Optimization opportunities ranked by impact
+- Before/after performance projections
+
+### Security Analysis Output
+Include:
+- CVE references where applicable
+- Exploitation difficulty assessment
+- Compliance mapping (SOC2, HIPAA, etc.)
+- Remediation code examples
+
+### Architecture Analysis Output
+Include:
+- Dependency graphs
+- Module boundary recommendations
+- Migration path to better architecture
+- Trade-off analysis
+
+## Instructions for AI
+
+1. **Be Specific**: Point to exact files and line numbers
+2. **Prioritize Ruthlessly**: Focus on highest impact items
+3. **Provide Evidence**: Show code examples for every issue
+4. **Think Systemically**: Look for patterns, not just instances
+5. **Consider Context**: Understand why code is the way it is
+6. **Be Actionable**: Every finding needs a clear next step
+7. **Use Visuals**: Diagrams make complex issues clearer
+8. **Benchmark Properly**: Compare against relevant standards
+9. **Think Long-term**: Consider maintenance and evolution
+10. **Enable the Team**: Provide tools and knowledge, not just criticism
+
+## Quality Checklist
+
+Ensure the analysis includes:
+- [ ] Specific code locations for all issues
+- [ ] Clear prioritization with rationale
+- [ ] Actionable recommendations
+- [ ] Effort estimates for fixes
+- [ ] Visual representations where helpful
+- [ ] Both tactical and strategic improvements
+- [ ] Team enablement plan
+- [ ] Success metrics defined
