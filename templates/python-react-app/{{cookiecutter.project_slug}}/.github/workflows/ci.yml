@@ -1,0 +1,74 @@
+name: ci
+
+# Blocking gates for a fresh project — lint + types + tests on both halves, plus a
+# type-drift check that the committed frontend types still match the backend schema.
+# Everything is at a zero baseline on generation, so all of this blocks. Once you
+# commit lockfiles, tighten `npm install` → `npm ci` and `uv sync` → `uv sync --frozen`.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: backend — ruff + mypy + pytest (blocking)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --dev
+      - name: ruff lint
+        run: uv run ruff check .
+      - name: ruff format check
+        run: uv run ruff format --check .
+      - name: mypy
+        run: uv run mypy app
+      - name: pytest
+        run: uv run pytest -q
+
+  frontend:
+    name: frontend — eslint + tsc + vitest (blocking)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: eslint
+        run: npm run lint
+      - name: tsc typecheck
+        run: npm run typecheck
+      - name: vitest
+        run: npm run test
+
+  type-drift:
+    name: type-drift — frontend types match backend schema (blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: install backend
+        run: uv sync --dev
+        working-directory: backend
+      - name: install frontend
+        run: npm install
+        working-directory: frontend
+      - name: regenerate types from the live OpenAPI schema
+        run: npm run generate:types
+        working-directory: frontend
+      - name: fail if committed types drifted from the backend
+        run: git diff --exit-code -- frontend/src/types/api.generated.ts

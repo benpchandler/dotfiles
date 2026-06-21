@@ -1,10 +1,9 @@
+"""{{ cookiecutter.project_name }} — FastAPI application."""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from strawberry.fastapi import GraphQLRouter
 
-from app.api.router import api_router
-from app.graphql.schema import schema
-from app.core.config import settings
+from app.models import HealthResponse, Item
 
 app = FastAPI(
     title="{{ cookiecutter.project_name }}",
@@ -12,34 +11,22 @@ app = FastAPI(
     version="{{ cookiecutter.version }}",
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=["http://localhost:5173"],  # Vite dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# REST API routes
-app.include_router(api_router, prefix="/api/v1")
 
-# GraphQL endpoint
-graphql_app = GraphQLRouter(schema)
-app.include_router(graphql_app, prefix="/graphql")
+@app.get("/api/health")
+async def health() -> HealthResponse:
+    """Liveness probe."""
+    return HealthResponse(status="ok", version="{{ cookiecutter.version }}")
 
-@app.get("/")
-async def root():
-    return {
-        "message": "{{ cookiecutter.project_name }} API",
-        "version": "{{ cookiecutter.version }}",
-        "endpoints": {
-            "api": "/api/v1",
-            "graphql": "/graphql",
-            "docs": "/docs"
-        }
-    }
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/api/items")
+async def list_items() -> list[Item]:
+    """Example typed endpoint — drives the OpenAPI schema the frontend types derive from."""
+    return [Item(id=1, name="example", done=False)]

@@ -2,60 +2,44 @@
 
 {{ cookiecutter.description }}
 
-## Architecture
+A Python (FastAPI) + React (TypeScript) project with strict, gate-enforced quality
+baked in from line one: ruff + strict mypy on the backend, ESLint + strict tsc on the
+frontend, end-to-end typed via OpenAPI, all blocking in CI.
 
-This project follows the vertical slice architecture pattern with:
+## Setup
 
-- **Frontend**: Vite + TypeScript + React
-- **Backend**: FastAPI with hybrid GraphQL/REST API
-- **Database**: PostgreSQL{% if cookiecutter.use_vector_search == "yes" %} with pgvector extension{% endif %}
-- **UI**: shadcn/ui components with Tailwind CSS
-
-## Project Structure
-
-```
-{{ cookiecutter.project_slug }}/
-├── backend/                 # FastAPI backend
-│   ├── app/
-│   │   ├── api/            # REST endpoints
-│   │   ├── graphql/        # GraphQL schema & resolvers
-│   │   ├── core/           # Configuration, database
-│   │   ├── models/         # SQLAlchemy models
-│   │   └── main.py
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── features/       # Vertical slice features
-│   │   ├── shared/         # Shared utilities
-│   │   └── App.tsx
-├── docker-compose.yml{% if cookiecutter.use_docker == "yes" %}
-├── .env.example
-└── README.md
-```
-
-## Quick Start
-
-### Prerequisites
-- Python {{ cookiecutter.python_version }}+
-- Node.js 18+
-- PostgreSQL{% if cookiecutter.use_vector_search == "yes" %} with pgvector extension{% endif %}
-
-### Backend Setup
 ```bash
+# Backend
 cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+uv sync --dev
+uv run pytest                 # passes out of the box
+uv run pre-commit install     # optional: local gates on commit
 
-# Set up database (PostgreSQL must be running)
-alembic upgrade head
-
-# Start the server
-uvicorn app.main:app --reload
-```
-
-### Frontend Setup
-```bash
-cd frontend
+# Frontend
+cd ../frontend
 npm install
-npm run dev
+npm run generate:types        # generate API types from the backend OpenAPI schema
+npm run check                 # lint + typecheck + test
 ```
+
+After the first install, commit the generated `backend/uv.lock` and
+`frontend/package-lock.json`, then tighten CI's `uv sync` → `uv sync --frozen` and
+`npm install` → `npm ci` for reproducible builds.
+
+## Run
+
+```bash
+cd backend && uv run uvicorn app.main:app --reload   # http://localhost:8000  (/docs for OpenAPI)
+cd frontend && npm run dev                            # http://localhost:5173
+```
+
+## The gates
+
+| | Lint | Types | Tests |
+|---|---|---|---|
+| backend | `uv run ruff check .` | `uv run mypy app` | `uv run pytest` |
+| frontend | `npm run lint` | `npm run typecheck` | `npm run test` |
+
+CI additionally runs a **type-drift** check: change a backend model without
+regenerating `frontend/src/types/api.generated.ts` (`npm run generate:types`) and CI
+fails — the frontend can never silently disagree with the backend about a shape.
